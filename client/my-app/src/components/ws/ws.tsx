@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import Chat from '../chat/chat';
 import Connect from '../connect/connect';
 import './ws.css';
@@ -11,9 +11,13 @@ export interface IMessage {
 }
 const WebSocketComponent: FC = () => {
   const [connected, setConnected] = useState(false);
-  const [username, setUserName] = useState('');
+  const [username, setUserName] = useState<string[]>([]);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const socket = useRef<WebSocket>();
+
+  useEffect(() => {
+    return () => socket.current?.close();
+  }, []);
 
   const connect = (userName: string) => {
     socket.current = new WebSocket('ws://localhost:5000');
@@ -29,15 +33,25 @@ const WebSocketComponent: FC = () => {
 
       socket.current?.send(JSON.stringify(msg));
 
-      setUserName(userName);
+      // setUserName(userName);
     };
 
     socket.current.onmessage = (event) => {
       const msg = JSON.parse(event.data);
 
-      setMessages((prev) => {
-        return [...prev, msg];
-      });
+      switch (msg.event) {
+        case 'message':
+          setMessages((prev) => {
+            return [...prev, msg];
+          });
+          break;
+        case 'connection':
+          setUserName((prev) => [...msg.activeClients]);
+          setMessages((prev) => {
+            return [...prev, msg];
+          });
+          break;
+      }
     };
 
     socket.current.onclose = () => {
@@ -59,29 +73,7 @@ const WebSocketComponent: FC = () => {
   }
 
   return (
-    <Chat
-      messages={messages}
-      userList={[username]}
-      sendMessage={sendMsg}
-    ></Chat>
-
-    // <div className="container">
-    //   <input
-    //     type="text"
-    //     value={username}
-    //     onChange={(e) => setUserName(e.target.value)}
-    //     placeholder={connected ? 'Enter message' : 'Enter name or nickname'}
-    //   />
-
-    //   <button onClick={sendMsg}>Send</button>
-
-    //   <hr />
-    //   <div>
-    //     {messages.map((it) => {
-    //       return <div key={it.id}>{it.message}</div>;
-    //     })}
-    //   </div>
-    // </div>
+    <Chat messages={messages} userList={username} sendMessage={sendMsg}></Chat>
   );
 };
 

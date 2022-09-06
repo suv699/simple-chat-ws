@@ -13,6 +13,22 @@ interface ChatProps {
   userList: string[];
   sendMessage: (message: IMessage) => void;
 }
+// TODO move to utils
+const isValidDate = (date: number) =>
+  new Date(date).toString() !== 'Invalid Date';
+const getFormatTitleDate = (date: number): string =>
+  isValidDate(date)
+    ? new Date(date).toLocaleString('ru', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        // timeZone: default_timezone,
+      })
+    : `${date}`;
+
 const Chat: FC<ChatProps> = ({ messages, userList, sendMessage }) => {
   const [message, setMessage] = useState('');
 
@@ -35,6 +51,8 @@ const Chat: FC<ChatProps> = ({ messages, userList, sendMessage }) => {
     },
     [message]
   );
+
+  const formatDate = useCallback(getFormatTitleDate, []);
   return (
     <div className="chat-wrapper">
       <div className="chat-container">
@@ -48,7 +66,20 @@ const Chat: FC<ChatProps> = ({ messages, userList, sendMessage }) => {
         <div className="chat-message">
           <div className="chat-message-list">
             {messages.map((it) => {
-              return <div key={it.id}>{it.message}</div>;
+              return it.event !== 'message' ? (
+                <div className="chat-message-item-connection" key={it.id}>
+                  <div className="chat-message-text">{it.message}</div>
+                  <div className="chat-message-time">{formatDate(it.id)}</div>
+                </div>
+              ) : (
+                <div className="chat-message-item" key={it.id}>
+                  <div className="chat-message-text">
+                    {it.message}
+                    <small> &nbsp; {it.author}</small>
+                  </div>
+                  <div className="chat-message-time">{formatDate(it.id)}</div>
+                </div>
+              );
             })}
           </div>
           <div className="chat-message-input">
