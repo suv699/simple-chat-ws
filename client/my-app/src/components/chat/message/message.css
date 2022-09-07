@@ -1,0 +1,25 @@
+.chat-message-item-connection {
+  padding: 8px;
+  border-radius: 15px;
+  margin: 4px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.chat-message-text {
+  flex: 1;
+  margin-right: 4px;
+}
+
+.chat-message-time {
+  font-size: 12px;
+}
+.chat-message-item {
+  padding: 8px;
+  background: rgb(216, 209, 209);
+  border-radius: 15px;
+  margin: 4px 0;
+
+  display: flex;
+  justify-content: space-between;
+}

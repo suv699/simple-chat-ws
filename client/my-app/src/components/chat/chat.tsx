@@ -7,11 +7,14 @@ import React, {
 } from 'react';
 import { IMessage } from '../ws/ws';
 import './chat.css';
+import Message from './message/message';
+import User from './user/user';
 
 interface ChatProps {
   messages: IMessage[];
   userList: string[];
   sendMessage: (message: IMessage) => void;
+  currentUser: string;
 }
 // TODO move to utils
 const isValidDate = (date: number) =>
@@ -29,7 +32,12 @@ const getFormatTitleDate = (date: number): string =>
       })
     : `${date}`;
 
-const Chat: FC<ChatProps> = ({ messages, userList, sendMessage }) => {
+const Chat: FC<ChatProps> = ({
+  messages,
+  userList,
+  sendMessage,
+  currentUser,
+}) => {
   const [message, setMessage] = useState('');
 
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +50,7 @@ const Chat: FC<ChatProps> = ({ messages, userList, sendMessage }) => {
         const msg: IMessage = {
           id: Date.now(),
           event: 'message',
-          author: userList[0],
+          author: currentUser,
           message: `${message}`,
         };
         sendMessage(msg);
@@ -58,29 +66,19 @@ const Chat: FC<ChatProps> = ({ messages, userList, sendMessage }) => {
       <div className="chat-container">
         <div className="chat-users">
           {userList.map((user) => (
-            <div key={user.toString()} className="chat-user-list">
-              {user}
-            </div>
+            <User key={user.toString()} user={user}></User>
           ))}
         </div>
         <div className="chat-message">
           <div className="chat-message-list">
-            {messages.map((it) => {
-              return it.event !== 'message' ? (
-                <div className="chat-message-item-connection" key={it.id}>
-                  <div className="chat-message-text">{it.message}</div>
-                  <div className="chat-message-time">{formatDate(it.id)}</div>
-                </div>
-              ) : (
-                <div className="chat-message-item" key={it.id}>
-                  <div className="chat-message-text">
-                    {it.message}
-                    <small> &nbsp; {it.author}</small>
-                  </div>
-                  <div className="chat-message-time">{formatDate(it.id)}</div>
-                </div>
-              );
-            })}
+            {messages.map((it) => (
+              <Message
+                key={it.id}
+                message={it}
+                formatDate={formatDate}
+                inMessage={it.author !== currentUser}
+              ></Message>
+            ))}
           </div>
           <div className="chat-message-input">
             <input

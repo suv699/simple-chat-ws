@@ -11,6 +11,7 @@ export interface IMessage {
 }
 const WebSocketComponent: FC = () => {
   const [connected, setConnected] = useState(false);
+  const [currentUser, setCurrentUser] = useState<string>('');
   const [username, setUserName] = useState<string[]>([]);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const socket = useRef<WebSocket>();
@@ -24,6 +25,7 @@ const WebSocketComponent: FC = () => {
 
     socket.current.onopen = () => {
       setConnected(true);
+      setCurrentUser(userName);
       const msg: IMessage = {
         id: Date.now(),
         event: 'connection',
@@ -32,8 +34,6 @@ const WebSocketComponent: FC = () => {
       };
 
       socket.current?.send(JSON.stringify(msg));
-
-      // setUserName(userName);
     };
 
     socket.current.onmessage = (event) => {
@@ -73,7 +73,12 @@ const WebSocketComponent: FC = () => {
   }
 
   return (
-    <Chat messages={messages} userList={username} sendMessage={sendMsg}></Chat>
+    <Chat
+      messages={messages}
+      userList={username}
+      sendMessage={sendMsg}
+      currentUser={currentUser}
+    ></Chat>
   );
 };
 
