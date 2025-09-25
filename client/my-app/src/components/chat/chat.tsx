@@ -1,14 +1,10 @@
-import React, {
-  ChangeEvent,
-  FC,
-  KeyboardEvent,
-  useCallback,
-  useState,
-} from 'react';
-import { IMessage } from '../ws/ws';
+import React, { ChangeEvent, FC, KeyboardEvent, useCallback, useState } from 'react';
+
 import './chat.css';
 import Message from './message/message';
 import User from './user/user';
+
+import { IMessage } from '../ws/ws';
 
 interface ChatProps {
   messages: IMessage[];
@@ -17,8 +13,7 @@ interface ChatProps {
   currentUser: string;
 }
 // TODO move to utils
-const isValidDate = (date: number) =>
-  new Date(date).toString() !== 'Invalid Date';
+const isValidDate = (date: number) => new Date(date).toString() !== 'Invalid Date';
 const getFormatTitleDate = (date: number): string =>
   isValidDate(date)
     ? new Date(date).toLocaleString('ru', {
@@ -32,12 +27,7 @@ const getFormatTitleDate = (date: number): string =>
       })
     : `${date}`;
 
-const Chat: FC<ChatProps> = ({
-  messages,
-  userList,
-  sendMessage,
-  currentUser,
-}) => {
+const Chat: FC<ChatProps> = ({ messages, userList, sendMessage, currentUser }) => {
   const [message, setMessage] = useState('');
 
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -57,36 +47,26 @@ const Chat: FC<ChatProps> = ({
         setMessage('');
       }
     },
-    [message]
+    [message],
   );
 
   const formatDate = useCallback(getFormatTitleDate, []);
   return (
-    <div className="chat-wrapper">
-      <div className="chat-container">
-        <div className="chat-users">
+    <div className='chat-wrapper'>
+      <div className='chat-container'>
+        <div className='chat-users'>
           {userList.map((user) => (
             <User key={user.toString()} user={user}></User>
           ))}
         </div>
-        <div className="chat-message">
-          <div className="chat-message-list">
+        <div className='chat-message'>
+          <div className='chat-message-list'>
             {messages.map((it) => (
-              <Message
-                key={it.id}
-                message={it}
-                formatDate={formatDate}
-                inMessage={it.author !== currentUser}
-              ></Message>
+              <Message key={it.id} message={it} formatDate={formatDate} inMessage={it.author !== currentUser}></Message>
             ))}
           </div>
-          <div className="chat-message-input">
-            <input
-              type="text"
-              value={message}
-              onChange={handleInput}
-              onKeyDown={handleKeyDown}
-            />
+          <div className='chat-message-input'>
+            <input type='text' value={message} onChange={handleInput} onKeyDown={handleKeyDown} />
           </div>
         </div>
       </div>

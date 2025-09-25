@@ -1,7 +1,9 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+
+import './ws.css';
+
 import Chat from '../chat/chat';
 import Connect from '../connect/connect';
-import './ws.css';
 
 export interface IMessage {
   id: number;
@@ -72,14 +74,7 @@ const WebSocketComponent: FC = () => {
     return <Connect connect={connect}></Connect>;
   }
 
-  return (
-    <Chat
-      messages={messages}
-      userList={username}
-      sendMessage={sendMsg}
-      currentUser={currentUser}
-    ></Chat>
-  );
+  return <Chat messages={messages} userList={username} sendMessage={sendMsg} currentUser={currentUser}></Chat>;
 };
 
 export default WebSocketComponent;
