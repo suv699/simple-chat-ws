@@ -12,9 +12,7 @@ const socket = new ws.Server(
 
 socket.on('connection', (ws) => {
   ws.on('message', (msg) => {
-    // broadcastMessage(msg);
     msg = JSON.parse(msg);
-    // console.log('msg - ', msg);
     switch (msg.event) {
       case 'message':
         broadcastMessage(msg);
