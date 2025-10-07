@@ -1,3 +1,5 @@
+import type { Message } from './App';
+
 // Mock данные для демонстрации
 export const mockChats = [
   {
@@ -47,7 +49,7 @@ export const mockChats = [
   },
 ];
 
-export const mockMessages = [
+export const mockMessages: Message[] = [
   {
     id: '1',
     content: 'Привет! Как дела с проектом?',

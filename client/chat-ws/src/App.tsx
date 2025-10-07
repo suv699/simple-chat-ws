@@ -4,9 +4,20 @@ import { useIsMobile } from './components/ui/use-mobile';
 import { ChatHeader, ChatInput, ChatList, ChatMessage } from './chat';
 import { ScrollArea } from './components/ui/scroll-area';
 
+type Statuses = 'sent' | 'read';
+export type Message = {
+  id: string;
+  content: string;
+  timestamp: string;
+  isOwn: boolean;
+  status?: Statuses;
+  avatar?: string;
+  senderName?: string;
+};
+
 export default function App() {
-  const [activeChat, setActiveChat] = useState<string | null>('1');
-  const [messages, setMessages] = useState(mockMessages);
+  const [activeChat, setActiveChat] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>(mockMessages);
   const [showChatOnMobile, setShowChatOnMobile] = useState(false);
   const isMobile = useIsMobile();
 
@@ -34,7 +45,7 @@ export default function App() {
       isOwn: true,
       status: 'sent' as const,
     };
-    //@ts-ignore
+
     setMessages([...messages, newMessage]);
   };
 
