@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { mockChats, mockMessages } from './mockData';
 import { useIsMobile } from './components/ui/use-mobile';
-import { ChatHeader, ChatInput, ChatList, ChatMessage } from './Chat';
+import { ChatHeader, ChatInput, ChatList, ChatMessage } from './chat';
 import { ScrollArea } from './components/ui/scroll-area';
 
 export default function App() {
